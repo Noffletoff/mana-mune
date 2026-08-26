@@ -23,6 +23,11 @@ without opening anything.
   1.4 shape at half mana becomes 1.4 × 0.8, not 0.8.
 - **Invert** — swap the ends. Small when full, large when empty.
 - **Only on jobs that spend mana** — see below.
+- **While dead** — dying empties the mana bar, so *Keep following mana* pins
+  every corpse at the minimum size. *Turn off* (the default) shows your own
+  Customize+ profile instead; *Freeze at last size* keeps whatever size you
+  died at. Either way it resumes the moment you are raised, at whatever mana
+  you come back with — so expect to return small and grow as you regen.
 - **Bones** — vanilla `j_mune_l` / `j_mune_r` by default, with IVCS and
   pectoral bones as tick boxes and a free-text field for anything else.
 

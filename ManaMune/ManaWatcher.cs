@@ -199,6 +199,20 @@ public sealed class ManaWatcher : IDisposable
             return;
         }
 
+        // Checked after the job and bone tests so that "does not apply at all"
+        // still wins over "applies, but they are dead".
+        switch (DeathPolicy.Decide(player.IsDead, _config.DeathBehaviour))
+        {
+            case DeathAction.Withdraw:
+                Withdraw();
+                return;
+
+            case DeathAction.LeaveAlone:
+                // Deliberately before the base refresh: a refresh that spotted
+                // a change would push a new profile and unfreeze the size.
+                return;
+        }
+
         var refreshed = false;
         if (--_baseCountdown <= 0)
         {

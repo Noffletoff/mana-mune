@@ -42,6 +42,12 @@ public sealed class Config : IPluginConfiguration
     /// <summary>Anything else, typed by hand.</summary>
     public string ExtraBones { get; set; } = string.Empty;
 
+    /// <summary>
+    /// What happens while dead. Defaults to withdrawing: death empties the mana
+    /// bar, so tracking it means every corpse is pinned at the minimum.
+    /// </summary>
+    public OnDeath DeathBehaviour { get; set; } = OnDeath.Disable;
+
     public static readonly string[] Vanilla = { "j_mune_l", "j_mune_r" };
     public static readonly string[] Ivcs = { "iv_c_mune_l", "iv_c_mune_r" };
     public static readonly string[] Pectoral = { "iv_kyokin_phys_l", "iv_kyokin_phys_r" };

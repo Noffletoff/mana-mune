@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Windowing;
@@ -158,7 +159,30 @@ public sealed class ConfigWindow : Window, IDisposable
             ImGui.SetTooltip("Every job reports 10000 MP these days, so on a Samurai this\n"
                            + "would otherwise sit pinned at the full-mana scale forever.\n"
                            + "With this on, ManaMune gets out of the way instead.");
+
+        var death = (int)_config.DeathBehaviour;
+        if (ImGui.Combo("While dead", ref death, (IReadOnlyList<string>)DeathLabels, 3))
+        {
+            _config.DeathBehaviour = (OnDeath)death;
+            _config.Save();
+            _watcher.SettingsChanged();
+        }
+
+        if (ImGui.IsItemHovered())
+            ImGui.SetTooltip("Dying empties the mana bar, so 'Keep following mana' pins\n"
+                           + "every corpse at the minimum size.\n\n"
+                           + "Turn off - your own Customize+ profile shows instead.\n"
+                           + "Freeze - whatever size you died at is the size that stays.\n\n"
+                           + "Either way it picks up again the moment you are raised,\n"
+                           + "at whatever mana you come back with.");
     }
+
+    private static readonly string[] DeathLabels =
+    {
+        "Keep following mana",
+        "Turn off",
+        "Freeze at last size",
+    };
 
     private void DrawBones()
     {
