@@ -1,0 +1,20 @@
+[
+  {
+    "Author": "Noffletoff",
+    "Name": "ManaMune",
+    "InternalName": "ManaMune",
+    "AssemblyVersion": "0.1.0.0",
+    "Description": "Drives the breast bones from how much mana you have left, through Customize+. Full at 100%, smaller as you spend - or the other way round. Your own Customize+ profile is read and carried along, so nothing else you have scaled is lost while it runs. Requires Customize+. Local only: nobody else sees it.",
+    "Punchline": "Your chest tracks your mana bar.",
+    "ApplicableVersion": "any",
+    "DalamudApiLevel": 15,
+    "Tags": [ "customize+", "scaling", "mana" ],
+    "CategoryTags": [ "other" ],
+    "RepoUrl": "https://github.com/Noffletoff/mana-mune",
+    "IconUrl": "",
+    "AcceptsFeedback": true,
+    "DownloadLinkInstall": "https://github.com/Noffletoff/mana-mune/releases/latest/download/latest.zip",
+    "DownloadLinkUpdate": "https://github.com/Noffletoff/mana-mune/releases/latest/download/latest.zip",
+    "DownloadLinkTesting": "https://github.com/Noffletoff/mana-mune/releases/latest/download/latest.zip"
+  }
+]

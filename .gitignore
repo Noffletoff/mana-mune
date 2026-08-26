@@ -1,0 +1,18 @@
+# Build output
+bin/
+obj/
+
+# IDE
+.vs/
+.idea/
+*.user
+*.suo
+
+# OS
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Packaged test builds (rebuilt from source; releases carry the real artefact)
+dist/*.zip
+dist/stage/

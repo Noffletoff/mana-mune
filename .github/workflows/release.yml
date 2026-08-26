@@ -1,0 +1,69 @@
+name: Release
+
+# Publishing is deliberately tied to a tag, not to every push to main, so that
+# putting code on GitHub and releasing it to users are separate decisions.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    # Windows because the plugin targets net10.0-windows and links against the
+    # Dalamud desktop assemblies.
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Fetch Dalamud
+        # The build needs the Dalamud dev assemblies, which are not on the
+        # runner. This is the same distribution XIVLauncher installs locally.
+        #
+        # DALAMUD_HOME is derived and exported HERE rather than in job-level
+        # env, because the runner context does not exist until a runner is
+        # assigned - referencing it above makes the whole workflow fail to
+        # start, with zero jobs and no step to point at.
+        shell: pwsh
+        run: |
+          $dalamud = Join-Path $env:RUNNER_TEMP 'dalamud'
+          Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/latest.zip -OutFile dalamud.zip
+          Expand-Archive -Path dalamud.zip -DestinationPath $dalamud
+          if (-not (Test-Path (Join-Path $dalamud 'Dalamud.dll'))) {
+            throw "Dalamud.dll not found under $dalamud after extraction"
+          }
+          "DALAMUD_HOME=$dalamud" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          Write-Host "DALAMUD_HOME=$dalamud"
+
+      - name: Test
+        run: dotnet test ManaMune.Tests --configuration Release
+
+      - name: Build
+        run: dotnet build ManaMune --configuration Release
+
+      - name: Check the version tag matches the manifest
+        # A tag that disagrees with AssemblyVersion produces a release Dalamud
+        # will refuse to offer as an update. Fail loudly here instead.
+        shell: pwsh
+        run: |
+          $manifest = Get-Content ManaMune/bin/Release/ManaMune/ManaMune.json | ConvertFrom-Json
+          $tag = "${{ github.ref_name }}".TrimStart('v')
+          if ($manifest.AssemblyVersion -notlike "$tag*") {
+            throw "Tag $tag does not match manifest version $($manifest.AssemblyVersion)"
+          }
+          Write-Host "version ok: $($manifest.AssemblyVersion)"
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ManaMune/bin/Release/ManaMune/latest.zip
+          generate_release_notes: true

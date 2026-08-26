@@ -1,0 +1,78 @@
+ManaMune 0.1.0 - test build
+===========================
+
+Scales your character's breast bones with how much mana you have left.
+
+REQUIRES Customize+ (https://github.com/Aether-Tools/CustomizePlus).
+Without it the plugin loads but says so and does nothing.
+
+
+Install
+-------
+
+1. Close the game.
+
+2. Open this folder:
+
+       %APPDATA%\XIVLauncher\devPlugins\
+
+   (paste that into the Explorer address bar)
+
+3. Make a new folder inside it called   ManaMune
+
+4. Copy these three files into it:
+
+       ManaMune.dll
+       ManaMune.json
+       ManaMune.deps.json
+
+   The result should be:
+       %APPDATA%\XIVLauncher\devPlugins\ManaMune\ManaMune.dll
+
+5. Start the game. Type  /manamune
+
+
+Use
+---
+
+Full mana gives one scale, empty mana gives another, sliding between the two
+as you cast. Defaults are 1.0 at full and 0.6 at empty.
+
+The two sliders are MULTIPLIERS on whatever your own Customize+ profile
+already sets - a 1.4 shape at half mana becomes 1.4 x 0.8, not 0.8. Your
+profile is read and carried along, so nothing else you have scaled is lost
+while this runs.
+
+Bones: vanilla j_mune_l / j_mune_r by default. IVCS and pectoral bones are
+tick boxes. Note the IVCS breast bones sit UNDER the vanilla ones in the
+skeleton, so ticking both multiplies rather than widens.
+
+"Only on jobs that spend mana" is on by default. Every job reports 10000 MP
+these days, so on a Samurai this would otherwise sit pinned at the full-mana
+scale forever.
+
+
+Worth knowing
+-------------
+
+- It is LOCAL ONLY. Nobody else sees it - not through Mare, not through
+  anything. Temporary Customize+ profiles are not synced. You see it on your
+  own character, on your own screen.
+
+- If you switch Customize+ profiles while it is running, press "Re-detect
+  profile". While ManaMune is applying, Customize+ reports ManaMune's own
+  profile as the active one, so a switch cannot be spotted automatically.
+  Zoning, changing job and logging in all re-detect on their own.
+
+- Turning it off or removing the plugin puts your normal profile straight
+  back. It never writes to your saved Customize+ profiles.
+
+
+If something goes wrong
+-----------------------
+
+Type  /manamune debug  - it prints the Customize+ API version, which profile
+it detected underneath, the current mana percent and the bones it is driving.
+It also dumps the full profile list to the log, which you can read with /xllog.
+
+Send that back along with what you saw.

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ManaMune.Tests/ManaMune.Tests.csproj" />
+  <Project Path="ManaMune/ManaMune.csproj" />
+</Solution>
