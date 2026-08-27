@@ -21,6 +21,9 @@ without opening anything.
 - **At full mana / At empty mana** — the two ends of the mapping. They are
   *multipliers* on whatever your own Customize+ profile already sets, so a
   1.4 shape at half mana becomes 1.4 × 0.8, not 0.8.
+- **Smooth** — slide to each new size instead of snapping to it. Mana arrives
+  in lumps (a Red Mage cast is about a sixth of the bar in one go), so without
+  this the size steps. Off is exactly the old behaviour.
 - **Invert** — swap the ends. Small when full, large when empty.
 - **Only on jobs that spend mana** — see below.
 - **While dead** — dying empties the mana bar, so *Keep following mana* pins

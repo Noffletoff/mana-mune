@@ -48,6 +48,12 @@ public sealed class Config : IPluginConfiguration
     /// </summary>
     public OnDeath DeathBehaviour { get; set; } = OnDeath.Disable;
 
+    /// <summary>
+    /// Slide to each new size instead of snapping to it. Off gives exactly the
+    /// old behaviour.
+    /// </summary>
+    public bool Smooth { get; set; } = true;
+
     public static readonly string[] Vanilla = { "j_mune_l", "j_mune_r" };
     public static readonly string[] Ivcs = { "iv_c_mune_l", "iv_c_mune_r" };
     public static readonly string[] Pectoral = { "iv_kyokin_phys_l", "iv_kyokin_phys_r" };

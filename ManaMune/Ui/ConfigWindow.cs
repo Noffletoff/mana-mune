@@ -135,6 +135,20 @@ public sealed class ConfigWindow : Window, IDisposable
 
         ImGui.TextColored(Dim, "Multipliers on whatever your own profile already sets.");
 
+        var smooth = _config.Smooth;
+        if (ImGui.Checkbox("Smooth", ref smooth))
+        {
+            _config.Smooth = smooth;
+            _config.Save();
+            _watcher.SettingsChanged();
+        }
+
+        if (ImGui.IsItemHovered())
+            ImGui.SetTooltip("Slide to each new size instead of snapping to it.\n\n"
+                           + "Mana arrives in lumps - a Red Mage cast is about a sixth\n"
+                           + "of the bar in one go - so without this the size steps.\n\n"
+                           + "Off is exactly the old behaviour.");
+
         var invert = _config.Invert;
         if (ImGui.Checkbox("Invert", ref invert))
         {

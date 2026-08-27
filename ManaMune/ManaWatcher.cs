@@ -23,6 +23,23 @@ public sealed class ManaWatcher : IDisposable
     /// <summary>Frames between checks that Customize+ is still there.</summary>
     private const int AvailabilityFrames = 60;
 
+    /// <summary>
+    /// Shortest gap between two profile pushes while easing.
+    ///
+    /// Without a cap, smoothing would send a new profile every frame, and each
+    /// one makes Customize+ deserialise the player's entire base profile and
+    /// rebuild the armature. Thirty a second is indistinguishable to the eye
+    /// and a fraction of the work. The final value is always sent immediately
+    /// regardless, so the ease still lands exactly where it should.
+    /// </summary>
+    private const double PushIntervalMs = 33;
+
+    /// <summary>
+    /// How long to wait before trying again after Customize+ refuses a profile.
+    /// Retrying every frame would hammer something already saying no.
+    /// </summary>
+    private const double RetryHoldMs = 500;
+
     private readonly Config _config;
     private readonly CustomizePlusBridge _cp;
     private readonly IClientState _clientState;
@@ -39,6 +56,13 @@ public sealed class ManaWatcher : IDisposable
 
     private int _lastPercent = -1;
     private bool _settingsChanged;
+
+    /// <summary>The scale actually sent, which chases <see cref="_target"/>.</summary>
+    private float _displayed = 1f;
+    private float _target = 1f;
+    private float _lastPushed = float.NaN;
+    private double _sincePushMs;
+    private double _retryHoldMs;
 
     /// <summary>
     /// Rebuilt only when the settings change. Working it out per frame meant
@@ -220,23 +244,58 @@ public sealed class ManaWatcher : IDisposable
             refreshed = RefreshBase();
         }
 
+        var elapsedMs = _framework.UpdateDelta.TotalMilliseconds;
+        if (_retryHoldMs > 0)
+        {
+            _retryHoldMs -= elapsedMs;
+            return;
+        }
+
+        _sincePushMs += elapsedMs;
+
         var percent = ManaScaler.Bucket(player.CurrentMp, player.MaxMp);
-        if (percent == _lastPercent && Applied && !refreshed && !_settingsChanged)
+        _lastPercent = percent;
+        _target = ManaScaler.Factor(percent, _config.ScaleAtEmpty, _config.ScaleAtFull,
+                                    _config.Invert);
+
+        if (!Applied)
+        {
+            // Nothing is on the character yet - after a login, a zone, a
+            // re-detect. Start at the answer rather than easing up to it, or
+            // every loading screen ends with a visible grow-in.
+            _displayed = _target;
+        }
+        else
+        {
+            _displayed = Smoothing.Step(_displayed, _target,
+                                        (float)_framework.UpdateDelta.TotalSeconds,
+                                        Smoothing.SecondsFor(_config.Smooth));
+        }
+
+        var forced = refreshed || _settingsChanged || !Applied;
+        var moved = Smoothing.Differs(_displayed, _lastPushed);
+        var arrived = !Smoothing.Differs(_displayed, _target);
+
+        // Mid-ease pushes are rate limited; the one that lands is not, so the
+        // final size is always exact.
+        if (!forced && !(moved && (arrived || _sincePushMs >= PushIntervalMs)))
             return;
 
         _settingsChanged = false;
 
-        var factor = ManaScaler.Factor(percent, _config.ScaleAtEmpty, _config.ScaleAtFull,
-                                       _config.Invert);
-        var json = ProfileMerge.Serialise(ProfileMerge.Apply(_baseProfile, _bones, factor));
+        var json = ProfileMerge.Serialise(ProfileMerge.Apply(_baseProfile, _bones, _displayed));
 
         var id = _cp.SetTemporary(json);
         if (id == null)
+        {
+            _retryHoldMs = RetryHoldMs;
             return;
+        }
 
         _appliedTempId = id;
-        _lastPercent = percent;
-        LastFactor = factor;
+        _lastPushed = _displayed;
+        _sincePushMs = 0;
+        LastFactor = _displayed;
     }
 
     /// <summary>
@@ -316,6 +375,11 @@ public sealed class ManaWatcher : IDisposable
         _cp.DeleteTemporary();
         _appliedTempId = null;
         _lastPercent = -1;
+
+        // Nothing is on the character, so there is no value to ease from. The
+        // next apply snaps.
+        _lastPushed = float.NaN;
+        _sincePushMs = 0;
 
         // The player's own profile becomes visible to Customize+ again, so the
         // next refresh can re-detect it.

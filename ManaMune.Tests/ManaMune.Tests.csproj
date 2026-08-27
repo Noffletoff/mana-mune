@@ -24,6 +24,7 @@
     <Compile Include="..\ManaMune\ManaScaler.cs" Link="Linked\ManaScaler.cs" />
     <Compile Include="..\ManaMune\MpJobs.cs" Link="Linked\MpJobs.cs" />
     <Compile Include="..\ManaMune\ProfileMerge.cs" Link="Linked\ProfileMerge.cs" />
+    <Compile Include="..\ManaMune\Smoothing.cs" Link="Linked\Smoothing.cs" />
   </ItemGroup>
 
   <ItemGroup>
