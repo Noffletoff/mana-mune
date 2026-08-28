@@ -25,6 +25,9 @@ without opening anything.
   in lumps (a Red Mage cast is about a sixth of the bar in one go), so without
   this the size steps. Off is exactly the old behaviour.
 - **Invert** — swap the ends. Small when full, large when empty.
+- **Only in combat** — withdraw entirely out of combat, so you wear your own
+  Customize+ profile while standing around town. Entering combat snaps to
+  your current mana rather than sliding up to it.
 - **Only on jobs that spend mana** — see below.
 - **While dead** — dying empties the mana bar, so *Keep following mana* pins
   every corpse at the minimum size. *Turn off* (the default) shows your own

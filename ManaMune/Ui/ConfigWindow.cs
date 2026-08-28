@@ -174,6 +174,20 @@ public sealed class ConfigWindow : Window, IDisposable
                            + "would otherwise sit pinned at the full-mana scale forever.\n"
                            + "With this on, ManaMune gets out of the way instead.");
 
+        var combat = _config.InCombatOnly;
+        if (ImGui.Checkbox("Only in combat", ref combat))
+        {
+            _config.InCombatOnly = combat;
+            _config.Save();
+            _watcher.SettingsChanged();
+        }
+
+        if (ImGui.IsItemHovered())
+            ImGui.SetTooltip("Out of combat ManaMune withdraws entirely, so you wear your\n"
+                           + "own Customize+ profile while standing around town.\n\n"
+                           + "Entering combat snaps straight to your current mana rather\n"
+                           + "than sliding up to it.");
+
         var death = (int)_config.DeathBehaviour;
         if (ImGui.Combo("While dead", ref death, (IReadOnlyList<string>)DeathLabels, 3))
         {

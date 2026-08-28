@@ -20,6 +20,7 @@
     Only add files here that have NO Dalamud using-directives.
   -->
   <ItemGroup>
+    <Compile Include="..\ManaMune\Applicability.cs" Link="Linked\Applicability.cs" />
     <Compile Include="..\ManaMune\DeathPolicy.cs" Link="Linked\DeathPolicy.cs" />
     <Compile Include="..\ManaMune\ManaScaler.cs" Link="Linked\ManaScaler.cs" />
     <Compile Include="..\ManaMune\MpJobs.cs" Link="Linked\MpJobs.cs" />

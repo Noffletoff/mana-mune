@@ -3,7 +3,7 @@
     "Author": "Noffletoff",
     "Name": "ManaMune",
     "InternalName": "ManaMune",
-    "AssemblyVersion": "0.3.0.0",
+    "AssemblyVersion": "0.4.0.0",
     "Description": "Drives the breast bones from how much mana you have left, through Customize+. Full at 100%, smaller as you spend - or the other way round. Your own Customize+ profile is read and carried along, so nothing else you have scaled is lost while it runs. Requires Customize+. Local only: nobody else sees it.",
     "Punchline": "Your chest tracks your mana bar.",
     "ApplicableVersion": "any",

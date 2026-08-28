@@ -54,6 +54,13 @@ public sealed class Config : IPluginConfiguration
     /// </summary>
     public bool Smooth { get; set; } = true;
 
+    /// <summary>
+    /// Only drive the character while in combat; withdraw the rest of the time.
+    /// Off by default - it narrows when the plugin does anything at all, which
+    /// should be a decision rather than a surprise.
+    /// </summary>
+    public bool InCombatOnly { get; set; }
+
     public static readonly string[] Vanilla = { "j_mune_l", "j_mune_r" };
     public static readonly string[] Ivcs = { "iv_c_mune_l", "iv_c_mune_r" };
     public static readonly string[] Pectoral = { "iv_kyokin_phys_l", "iv_kyokin_phys_r" };

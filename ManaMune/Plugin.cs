@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
@@ -31,6 +32,7 @@ public sealed class Plugin : IDalamudPlugin
         IChatGui chat,
         IClientState clientState,
         IObjectTable objects,
+        ICondition condition,
         IFramework framework)
     {
         _pi = pluginInterface;
@@ -42,7 +44,7 @@ public sealed class Plugin : IDalamudPlugin
         _config.Initialise(_pi);
 
         _cp = new CustomizePlusBridge(_pi, log);
-        _watcher = new ManaWatcher(_config, _cp, clientState, objects, framework, log);
+        _watcher = new ManaWatcher(_config, _cp, clientState, objects, condition, framework, log);
 
         _configWindow = new ConfigWindow(_config, _watcher);
         _windows.AddWindow(_configWindow);

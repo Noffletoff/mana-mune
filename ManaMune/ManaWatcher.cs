@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Plugin.Services;
 
 namespace ManaMune;
@@ -44,6 +45,7 @@ public sealed class ManaWatcher : IDisposable
     private readonly CustomizePlusBridge _cp;
     private readonly IClientState _clientState;
     private readonly IObjectTable _objects;
+    private readonly ICondition _condition;
     private readonly IFramework _framework;
     private readonly IPluginLog _log;
 
@@ -88,12 +90,14 @@ public sealed class ManaWatcher : IDisposable
     public string? BaseProfileName { get; private set; }
 
     public ManaWatcher(Config config, CustomizePlusBridge cp, IClientState clientState,
-                       IObjectTable objects, IFramework framework, IPluginLog log)
+                       IObjectTable objects, ICondition condition, IFramework framework,
+                       IPluginLog log)
     {
         _config = config;
         _cp = cp;
         _clientState = clientState;
         _objects = objects;
+        _condition = condition;
         _framework = framework;
         _log = log;
         _bones = config.BoneNames();
@@ -209,7 +213,8 @@ public sealed class ManaWatcher : IDisposable
             return;
         }
 
-        if (_config.OnlyMpJobs && !MpJobs.UsesMp(player.ClassJob.RowId))
+        if (!Applicability.ShouldApply(player.ClassJob.RowId, _config.OnlyMpJobs,
+                                       _condition[ConditionFlag.InCombat], _config.InCombatOnly))
         {
             Withdraw();
             return;
